@@ -32,7 +32,7 @@ colnames(obresti_2013) <- obresti_2013[1, ]
 obresti_2013 <- obresti_2013[-1, ]
 
 # - zdru?imo tabele v eno
-obresti <- rbind(obresti_2011,obresti_2012,obresti_2013)
+obresti <- data.table(rbind(obresti_2011,obresti_2012,obresti_2013), keep.rownames = TRUE)
 
 #c) narišemo graf
 #naredimo 2 ?asovni vrsti, T1 za 6 mesecev, U1 za 12 mesecev
@@ -41,7 +41,7 @@ T1 <- ts(data = obresti[,9],start = c(2011,1),frequency = 12)
 U1 <- ts(data = obresti[,15],start = c(2011,1),frequency = 12)
 
 #nari?emo graf
-require(graphics)
+library(graphics)
 
 grafEURIBOR <- ts.plot(T1,U1,xlab = "Time",ylab = "%", main = "EURIBOR", col = c("darksalmon","cornflowerblue"))
 legend("topright",legend=c("6 mesecev", "12 mesecev"),col=c("darksalmon", "cornflowerblue"),lty=1)
@@ -52,10 +52,12 @@ legend("topright",legend=c("6 mesecev", "12 mesecev"),col=c("darksalmon", "cornf
 #b)
 
 library(ggplot2)
+library(tibble)
 
-obrestiD <- data.table(t(obresti[c(4,20,26),]))
+obrestiD <- data.table(t(obresti[c(4,20,26),]),keep.rownames = TRUE)
 
-grafD <- ggplot(obrestiD,aes(x = obrestiD[,0],y = obrestiD[1,])) + geom_line(aes(colour=variable))
+
+
 
 
 
