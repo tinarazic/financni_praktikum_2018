@@ -70,7 +70,7 @@ grafD <- plot(y = obrestiD[,1],
               main="Časovna struktura Euribor")
 lines(obrestiD[,1], x = dospetja,col = "dodgerblue1", type ="o", text(11.5,1.7,"1.4.2011", col="dodgerblue1"))
 lines(obrestiD[,2], x = dospetja,col = "darkorange", type ="o", text(11.5,1.1,"1.8.2012", col="darkorange"))
-lines(obrestiD[,3], x = dospetja,col = "forestgreen", type = "o", text(11.5,0.4,"1.2.2013", col="forestgreen"))
+lines(obrestiD[,3], x = dospetja,col = "green", type = "o", text(11.5,0.4,"1.2.2013", col="green"))
 
 #OPIS OBRESTNIH KRIVULJ: Oblika vseh treh krivulj prikazanih na grafu je normalna. 
 #Vidimo, da z večanjem dospetja obrestna mera narašča. 
@@ -99,61 +99,69 @@ terminska <- as.data.frame(cbind(terminska,leto))
 
 terminska1 <- as.data.frame(terminska[-c(1:6),])
 
-
+# graf
 
 g.razsevni <- ggplot(terminska1,aes(x = terminska1$'Napoved6m', y = terminska1$'Euribor6m')) +
-  geom_point(colour = terminska1$'leto') +
-  geom_smooth(method='lm', se = FALSE) +
+  geom_point(aes(colour = terminska1$'leto'), size = 2) +
+  geom_smooth(method='lm', se = FALSE, color = "darkgray") +
   geom_abline(slope=1, intercept= 0) +
   coord_cartesian(xlim=c(0,2.4),ylim=c(0,2.4)) + 
-  labs(title ='6m Euribor 2011 - 2013', y='Opazovano', x = 'Napoved') +
-  theme_classic() +
-  guides(color = guide_legend(title = "Leto"))
- 
+  labs(title ='6m Euribor 2011 - 2013', y='Opazovano', x = 'Napoved', color = "Leto:") +
+  theme_classic()
 
 print(g.razsevni)
 
-# leto 2011
+# graf leto 2011
 
-terminska2011 <- terminska1[c(1:7),]
+terminska2011 <- terminska1[c(1:6),]
 
 g.leto2011 <- ggplot(terminska2011,aes(x = terminska2011$'Napoved6m', y = terminska2011$'Euribor6m')) +
-  geom_point() +
+  geom_point(colour = "darkorange", size = 2) +
   geom_abline() +
-  geom_smooth(method ="lm") +
-  coord_cartesian(xlim=c(0.1,2.5),ylim=c(0.1,2.5)) +
-  labs(title ='6m Euribor 2011', y='Opazovano', x = 'Napoved')
+  geom_smooth(method ="lm",se = FALSE, color = "darkgray") +
+  coord_cartesian(xlim=c(1.6,2.4),ylim=c(1.6,2.4)) +
+  labs(title ='6m Euribor 2011', y='Opazovano', x = 'Napoved') +
+  theme_classic()
 
-#print(g.leto2011)
+print(g.leto2011)
 
-# leto 2012
+# graf leto 2012
 
-terminska2012 <- terminska1[c(8:19),]
+terminska2012 <- terminska1[c(7:18),]
 
 g.leto2012 <- ggplot(terminska2012,aes(x = terminska2012$'Napoved6m', y = terminska2012$'Euribor6m')) +
-  geom_point() +
+  geom_point(colour = "green", size = 2) +
   geom_abline() +
-  geom_smooth(method ="lm") +
-  coord_cartesian(xlim=c(0.1,1.714),ylim=c(0.1,1.714)) +
-  labs(title ='6m Euribor 2012', y='Opazovano', x = 'Napoved')
+  geom_smooth(method ="lm", se = FALSE, color = "darkgray") +
+  coord_cartesian(xlim=c(0.3,2.3),ylim=c(0.3,2.3)) +
+  labs(title ='6m Euribor 2012', y='Opazovano', x = 'Napoved') +
+  theme_classic()
 
-#print(g.leto2012)
+print(g.leto2012)
 
-# leto 2013
+# graf leto 2013
 
-terminska2013 <- terminska1[c(20:31),]
+terminska2013 <- terminska1[c(19:30),]
 
 g.leto2013 <- ggplot(terminska2013,aes(x = terminska2013$'Napoved6m', y = terminska2013$'Euribor6m')) +
-  geom_point() +
+  geom_point(colour = "dodgerblue1", size = 2) +
   geom_abline() +
-  geom_smooth(method ="lm") +
-  coord_cartesian(xlim=c(0.1,1.714),ylim=c(0.1,1.714)) +
-  labs(title ='6m Euribor 2013', y='Opazovano', x = 'Napoved')
+  geom_smooth(method ="lm",se = FALSE, color = "darkgray") +
+  coord_cartesian(xlim=c(0.3,1.45),ylim=c(0.3,1.45)) +
+  labs(title ='6m Euribor 2013', y='Opazovano', x = 'Napoved') +
+  theme_classic()
 
-#print(g.leto2013)
+print(g.leto2013)
 
-# d) Hipoteza pričakovanj trga bi veljala, če bi grafi izgledali kot:
-# Empirični podatki hipotezo potrjujejo/ ovržejo.
+# d) Hipotezo pričakovanj trga glede na naše podatke in grafične prikaze ne moremo potrditi.
+#    Če bi želeli hipotezo potrditi, bi točke na grafih iz naloge c) in d) morale ležati čim bližje 
+#    regresijski premici, saj bi to po metodi kvadratov pomenilo, da sta si opazovana in napovedana vrednost 
+#    blizu oziroma sta enaki. V prevodu na obrestne mere, bi potem lahko rekli, da smo s terminsko obrestno 
+#    mero L(0,T,U) uspešno napovedali obrestno mero L(T,U)
+
+#    Torej naši empirični podatki ne potrjujejo hipoteze. Razlog je verjetno tudi v tem, da smo si izbrali
+#    obdobje proti koncu krize in so obrestne mere zelo nihale. 
+
 
 
 
