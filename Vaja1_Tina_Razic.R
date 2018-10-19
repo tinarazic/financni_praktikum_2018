@@ -1,5 +1,7 @@
 # FINAN?NI PRAKTIKUM - vaja 1
-# obdobje 2011 - 2013, 3 x 6 
+
+# IZBRANO OBDOBJE: 2011 - 2013, 6m x 12m
+
 # 1. Uvoz podatkov in dinamika obrestnih mer v ?asu
 #a)uvoz
 library(knitr)
@@ -59,11 +61,13 @@ legend("topright",legend=c("6 mesecev", "12 mesecev"),col=c("deeppink2", "cyan")
 obrestiD <- data.frame(obresti1[,c(4,20, 26)])
 
 #defeniramo x os
-obrestiD$dospetja = c(0.25,0.5,0.75,1,2,3,4,5,6,7,8,9,10,11,12)
+dospetja = c(0.25,0.5,0.75,1,2,3,4,5,6,7,8,9,10,11,12)
+
+obrestiD <- cbind(obrestiD,dospetja)
 
 #narišemo graf
 grafD <- plot(y = obrestiD[,1],
-              x = dospetja,
+              x = obrestiD$dospetja,
               ylim=c(min(0),max(2.1)),
               xlab="Dospetje [mesec]", 
               ylab="%", 
