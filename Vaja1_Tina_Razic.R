@@ -76,9 +76,10 @@ lines(obrestiD[,1], x = dospetja,col = "dodgerblue1", type ="o", text(11.5,1.7,"
 lines(obrestiD[,2], x = dospetja,col = "darkorange", type ="o", text(11.5,1.1,"1.8.2012", col="darkorange"))
 lines(obrestiD[,3], x = dospetja,col = "green", type = "o", text(11.5,0.4,"1.2.2013", col="green"))
 
-#OPIS OBRESTNIH KRIVULJ: Oblika vseh treh krivulj prikazanih na grafu je normalna. 
-#Vidimo, da z večanjem dospetja obrestna mera narašča. 
-#Prva in zadnja krivulja sta konkavni, druga pa je na začetku konveksna potem pa se nadaljuje  v konkavno obliko. 
+# OPIS OBRESTNIH KRIVULJ: Oblika vseh treh krivulj prikazanih na grafu je normalna. 
+# Vidimo, da z večanjem dospetja obrestna mera narašča. 
+# Prva in zadnja krivulja sta konkavni, druga pa je na začetku konveksna potem pa se nadaljuje v konkavno 
+# obliko. 
 
 
 #3. Hipoteza pri?akovanj trga
