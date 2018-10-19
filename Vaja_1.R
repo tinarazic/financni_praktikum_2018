@@ -13,6 +13,7 @@ library(shiny)
 library(tidyr)
 library(magrittr)
 library(nlme)
+library(reshape2)
 
 hist_EURIBOR_2011 <- read_csv("hist_EURIBOR_2011.csv")
 hist_EURIBOR_2012 <- read_csv("hist_EURIBOR_2012.csv")
@@ -82,7 +83,7 @@ lines(obrestiD[,3], x = dospetja,col = "forestgreen", type = "o", text(11.5,0.4,
 terminska <- obresti[,c(9,15)]
 
 #izračunamo vse možne terminske obrestne mere
-izracun <- (1/(12-6))*(((1+12*terminska[,2])/(1+6*terminska[,1]))-1)
+izracun <- (1/(12-6))*(((1+12*0.01*terminska[,2])/(1+6*0.01*terminska[,1]))-1)*100
 
 #združimo v eno tabelo
 terminska <- as.data.frame(cbind(terminska,izracun))
@@ -98,12 +99,19 @@ terminska <- as.data.frame(cbind(terminska,leto))
 
 terminska1 <- as.data.frame(terminska[-c(1:6),])
 
-g.razsevni <- ggplot(terminska1,aes(x = terminska1$'Napoved6m', y = terminska1$'Euribor6m', colour = terminska1$'leto')) +
-  geom_point() +
-  geom_abline() +
-  geom_smooth(method ="lm") +
-  coord_cartesian(xlim=c(0.1,1.714),ylim=c(0.1,1.714)) +
-  labs(title ='6m Euribor 2011-2013', y='Opazovano', x = 'Napoved')
+
+
+g.razsevni <- ggplot(terminska1,aes(x = terminska1$'Napoved6m', y = terminska1$'Euribor6m')) +
+  geom_point(colour = terminska1$'leto') +
+  geom_smooth(method='lm', se = FALSE) +
+  geom_abline(slope=1, intercept= 0) +
+  coord_cartesian(xlim=c(0,2.4),ylim=c(0,2.4)) + 
+  labs(title ='6m Euribor 2011 - 2013', y='Opazovano', x = 'Napoved') +
+  theme_classic() +
+  guides(color = guide_legend(title = "Leto"))
+ 
+
+print(g.razsevni)
 
 # leto 2011
 
@@ -116,6 +124,8 @@ g.leto2011 <- ggplot(terminska2011,aes(x = terminska2011$'Napoved6m', y = termin
   coord_cartesian(xlim=c(0.1,2.5),ylim=c(0.1,2.5)) +
   labs(title ='6m Euribor 2011', y='Opazovano', x = 'Napoved')
 
+#print(g.leto2011)
+
 # leto 2012
 
 terminska2012 <- terminska1[c(8:19),]
@@ -127,6 +137,8 @@ g.leto2012 <- ggplot(terminska2012,aes(x = terminska2012$'Napoved6m', y = termin
   coord_cartesian(xlim=c(0.1,1.714),ylim=c(0.1,1.714)) +
   labs(title ='6m Euribor 2012', y='Opazovano', x = 'Napoved')
 
+#print(g.leto2012)
+
 # leto 2013
 
 terminska2013 <- terminska1[c(20:31),]
@@ -137,6 +149,8 @@ g.leto2013 <- ggplot(terminska2013,aes(x = terminska2013$'Napoved6m', y = termin
   geom_smooth(method ="lm") +
   coord_cartesian(xlim=c(0.1,1.714),ylim=c(0.1,1.714)) +
   labs(title ='6m Euribor 2013', y='Opazovano', x = 'Napoved')
+
+#print(g.leto2013)
 
 # d) Hipoteza pričakovanj trga bi veljala, če bi grafi izgledali kot:
 # Empirični podatki hipotezo potrjujejo/ ovržejo.
