@@ -1,9 +1,10 @@
-# FINAN?NI PRAKTIKUM - vaja 1
+# FINANčNI PRAKTIKUM -  Vaja 1
 
 # IZBRANO OBDOBJE: 2011 - 2013, 6m x 12m
 
-# 1. Uvoz podatkov in dinamika obrestnih mer v ?asu
-#a)uvoz
+# 1. Uvoz podatkov in dinamika obrestnih mer v času
+
+# a)uvoz
 library(knitr)
 library(dplyr)
 library(readr)
@@ -21,7 +22,8 @@ hist_EURIBOR_2011 <- read_csv("hist_EURIBOR_2011.csv")
 hist_EURIBOR_2012 <- read_csv("hist_EURIBOR_2012.csv")
 hist_EURIBOR_2013 <- read_csv("hist_EURIBOR_2013.csv")
 
-#b)
+# b)
+
 # izbira stolpcev
 obresti_2011 <- hist_EURIBOR_2011[,c(1,2,23,43,66,85,107,129,150,173,195,216,238)]
 obresti_2012 <- hist_EURIBOR_2012[,c(1,2,24,45,67,86,108,129,151,174,194,217,239)]
@@ -38,34 +40,38 @@ obresti1 <- obresti[,-1]
 rownames(obresti1) <- obresti[,1]
 obresti <- obresti1
 
-#transponiramo tabelo
+# transponiramo tabelo
 obresti <-t(obresti)
 
-#c) narisemo graf
-#naredimo 2 casovni vrsti, T1 za 6 mesecev, U1 za 12 mesecev
+# c) narišemo graf
+
+# naredimo 2 časovni vrsti, T1 za 6 mesecev, U1 za 12 mesecev
 
 vrsta1 <- ts(data = obresti[,9],start = c(2011,1),frequency = 12)
 vrsta2 <- ts(data = obresti[,15],start = c(2011,1),frequency = 12)
 
-#nari?emo graf
+#narišemo graf
 library(graphics)
 
 grafEURIBOR <- ts.plot(vrsta1,vrsta2,xlab = "Time",ylab = "%", main = "EURIBOR", col = c("deeppink2","cyan"))
 legend("topright",legend=c("6 mesecev", "12 mesecev"),col=c("deeppink2", "cyan"),lty=1)
 
 
-#2. Oblika obrestne krivulje 
-#a) izbira datumov:01/04/2011 razmik & 01/08/2012 hrib?ek1 & 01/02/2013 hrib?ek2 (4,20,26)
-#b)
-# izberemos tolpce, ki predstavljajo izbrane datume
+# 2. Oblika obrestne krivulje 
+
+# a) izbira datumov:01/04/2011  & 01/08/2012  & 01/02/2013 (4,20,26)
+
+# b)
+
+# izberemo  stolpce, ki predstavljajo izbrane datume
 obrestiD <- data.frame(obresti1[,c(4,20, 26)])
 
-#defeniramo x os
+# defeniramo x os
 dospetja = c(0.25,0.5,0.75,1,2,3,4,5,6,7,8,9,10,11,12)
 
 obrestiD <- cbind(obrestiD,dospetja)
 
-#narišemo graf
+# narišemo graf
 grafD <- plot(y = obrestiD[,1],
               x = obrestiD$dospetja,
               ylim=c(min(0),max(2.1)),
@@ -76,14 +82,19 @@ lines(obrestiD[,1], x = dospetja,col = "dodgerblue1", type ="o", text(11.5,1.7,"
 lines(obrestiD[,2], x = dospetja,col = "darkorange", type ="o", text(11.5,1.1,"1.8.2012", col="darkorange"))
 lines(obrestiD[,3], x = dospetja,col = "green", type = "o", text(11.5,0.4,"1.2.2013", col="green"))
 
-# OPIS OBRESTNIH KRIVULJ: Oblika vseh treh krivulj prikazanih na grafu je normalna. 
-# Vidimo, da z večanjem dospetja obrestna mera narašča. 
+# OPIS OBRESTNIH KRIVULJ: Oblika vseh treh krivulj prikazanih na grafu je normalna.
+# Krivulje kažejo na stabilno obdobje z inflacijo, kar povečuje višino obrestne mere, glede na dospelost.
 # Prva in zadnja krivulja sta konkavni, druga pa je na začetku konveksna potem pa se nadaljuje v konkavno 
-# obliko. 
+# obliko.
+# Zanimivo je tudi videti, da se krivulji za leto 2012 in 2013 prekrivata. Lahko rečemo, da učinek svetovne
+# krize iz preteklih letih upada in se obrestne mere vračajo v stabilne smernice, kjer ni presenetljivih
+# nihanj.
 
 
-#3. Hipoteza pri?akovanj trga
+#3. Hipoteza pričakovanj trga
+
 #a) & b) izračun terminskih obrestnih mer
+
 #vzamemo samo stolpa z dospetjem 6 mesecev in 12 mesecev
 terminska <- obresti[,c(9,15)]
 
@@ -159,13 +170,23 @@ g.leto2013 <- ggplot(terminska2013,aes(x = terminska2013$'Napoved6m', y = termin
 print(g.leto2013)
 
 # d) Hipotezo pričakovanj trga glede na naše podatke in grafične prikaze ne moremo potrditi.
-#    Če bi želeli hipotezo potrditi, bi točke na grafih iz naloge c) in d) morale ležati čim bližje 
-#    regresijski premici, saj bi to po metodi kvadratov pomenilo, da sta si opazovana in napovedana vrednost 
-#    blizu oziroma sta enaki. V prevodu na obrestne mere, bi potem lahko rekli, da smo s terminsko obrestno 
-#    mero L(0,T,U) uspešno napovedali obrestno mero L(T,U)
+#    Če bi želeli hipotezo potrditi, bi morale točke na grafih ležati na simetrali lihih kvadrantov 
+#    oziroma v njeni bližini in posledično, bi se tudi regersijska premica bolj prilegala simetrali.
+#    V prevodu na obrestne mere, bi potem lahko rekli, da smo s terminsko obrestno 
+#    mero L(0,T,U) uspešno napovedali obrestno mero L(T,U).
+#    Večina pik na grafu "6m Euribor 2011 -2013" leži pod simetralo lihih kvadrantov, saj so naše napovedi
+#    velikokrat bile večje od opazovanih obrestnih mer.
+#    Na skupnem grafu vidimo linerano korelacijo med opazovano in napovedano obrestno mero. Če pa pogledamo
+#    grafe za posamezna leta, pa temu ni vedno tako. Že na grafu za leto 2011 vidimo negativno korelacijo,
+#    saj se napovedane vrednosti večajo, dejanske vrednosti pa padajo. 
+#    V letu 2012 so opazovane obrestne mere drastično padle in tudi naše napovedi začnejo padati. To 
+#    pozitivno korelacijo lahko potrdimo z našo regresijsko premico na grafu.
+#    V letu 2013 pa vidimo skoraj konstantno regresijsko premico, saj niti dejanske obrestne mere 
+#    niti naše napovedi niso tako nihale. Mogoče bi lahko rekli, da se je po krizi gospodarstvo malo 
+#    umirilo in stabiliziralo. Še vedno pa lahko vidimo veliko razliko med opazovano in napovedano 
+#    vrednostjo obrestne mere. 
 
-#    Torej naši empirični podatki ne potrjujejo hipoteze. Razlog je verjetno tudi v tem, da smo si izbrali
-#    obdobje proti koncu krize in so obrestne mere zelo nihale. 
+###############################################################################################################
 
 
 
