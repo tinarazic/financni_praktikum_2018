@@ -53,7 +53,11 @@ vrsta2 <- ts(data = obresti[,15],start = c(2011,1),frequency = 12)
 #narišemo graf
 library(graphics)
 
-grafEURIBOR <- ts.plot(vrsta1,vrsta2,xlab = "Time",ylab = "%", main = "EURIBOR", col = c("deeppink2","cyan"))
+grafEURIBOR <- ts.plot(vrsta1,vrsta2,
+                       xlab = "Time",
+                       ylab = "%", 
+                       main = "EURIBOR", 
+                       col = c("deeppink2","cyan"))
 legend("topright",legend=c("6 mesecev", "12 mesecev"),col=c("deeppink2", "cyan"),lty=1)
 
 
