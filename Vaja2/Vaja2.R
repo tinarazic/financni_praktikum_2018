@@ -161,15 +161,15 @@ diskr.S <- aggregateDist(method = "recursive",
 
 #upanje slučanje spremenljivke S = (vrednosti S)* (skoki v teh točkah) 
 moment1.S <- sum( knots(diskr.S) * diff(diskr.S)) 
-# = 63.51607
+# = 42.2016
 
 # drugi moment slučajne spremenljivke 
 moment2.S <- sum( knots(diskr.S)^2 * diff(diskr.S))
-# = 4824.193
+# = 2184.512
 
 #disperzija od S = E(S^2)-E(S)^2 
 disperzija.S <- moment2.S - moment1.S^2 
-# = 789.9022
+# = 403.5375
 
 #####################################################################################
 
@@ -192,14 +192,14 @@ for (n in simN){
 # b)ocena za upanje in disperzijo spremenljivke S
 
 upanje.simS <- mean(simS)
-# = 66.06927
+# = 44.31815
 
 var.simS <- var(simS)
-# = 1054.335
+# = 2072.43
 
-# S pomočjo simulacije dobimo slabšo oceno za pričakovano vrednost, saj je vrednost, ki smo jo dobili
-# v drugi nalogi bližja vrednosti iz 1. naloge.
-# Lahko pa površno rečemo, da dobimo boljšo oceno za varianco kot oceno pri Panjerjevem algoritmu,
+# S pomočjo simulacije dobimo boljšo oceno za pričakovano vrednost, saj je vrednost, ki smo jo dobili
+# s simulacijo bližja vrednosti iz 1. naloge kot vrednost pri Panjerjevem algoritmu.
+# Lahko pa površno rečemo, da dobimo boljšo oceno za varianco kot pri Panjerjevem algoritmu,
 # saj je vrednost višja in tako bližje neskočnosti.
 
 # c)
