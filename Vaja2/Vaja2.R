@@ -145,10 +145,10 @@ diskretnaY2 <- discretize(ppareto1(x,shape, min),
                          step = h)
 
 diskr.S <- aggregateDist(method = "recursive",
-                     model.freq = "poisson",
+                     model.freq = "binom",
                      model.sev = diskretnaY2,
-                     lambda = 15,
-                     p0 = exp(-15),
+                     size = 20,
+                     prob = 1/2,
                      x.scale = h,
                      convolve = 0,
                      maxit=1000000,
@@ -180,7 +180,7 @@ disperzija.S <- moment2.S - moment1.S^2
 # a) simulacija 10000 vrednosti slučajne spremenljivke S
 
 #simulacija spremenljivke N
-simN <- rpois(10000, 15)
+simN <- rbinom(10000, 20, 1/2)
 
 #simulacija spremenljivke S
 simS <- c()
