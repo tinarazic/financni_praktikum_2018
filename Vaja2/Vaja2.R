@@ -32,16 +32,16 @@ histogram1 <- hist(vzorec$odskodnine,
 # b) histogram kaže na Paretovo porazdelitev
 
 parametri <- mde(vzorec$odskodnine, 
-                 ppareto1, 
+                 dpareto1, 
                  start = list(shape = 1, min = 1), measure = "CvM")
 shape <- as.numeric(parametri$estimate[1])
 min <- as.numeric(parametri$estimate[2])
 
-# parametri =
+# parametri
 # shape       min    
-# 1.860671   2.053679 
+# 1.524951   2.590723 
 # distance  
-# 0.07064093 
+# 43.62424 
 
 # c) 
 
@@ -50,7 +50,8 @@ histogram2 <- hist(vzorec$odskodnine,
                    main = "Primerjava histograma in vzorčne gostote ", 
                    xlab = "Višina odškodnine", 
                    ylab = "Gostota",
-                   col = "gainsboro")
+                   col = "gainsboro",
+                   ylim = c(0,0.58))
 curve(dpareto1(x,shape, min),
       add = TRUE, 
       from = min(vzorec$odskodnine), 
@@ -83,10 +84,10 @@ legend("right", lty = c(1, 6),
 size =  20  # = n 
 prob = 1/2 # = p
 
-upanje.Y <- as.numeric(shape * min / (shape - 1)) # = 4.439818
+upanje.Y <- as.numeric(shape * min / (shape - 1)) # = 7.525889
 upanje.N <- size * prob # = 10
 
-upanje.S <- upanje.N * upanje.Y # = 44.39818
+upanje.S <- upanje.N * upanje.Y # = 75.25889
 
 var.Y <- Inf
 var.N <- size * prob * (1 - prob) # = 5
@@ -94,7 +95,7 @@ var.N <- size * prob * (1 - prob) # = 5
 var.S <- upanje.N * var.Y + ((upanje.Y)^2)*var.N # = Inf, ker je var.Y = Inf
 
 # Torej:
-# upanje kolektivne škode S = 44.39818
+# upanje kolektivne škode S = 75.25889
 # disperzija kolektivne škode S = Inf
 
 ###########################################################################
@@ -115,7 +116,7 @@ diskretnaY <- discretize(ppareto1(x,shape, min),
 )
 
 
-# b)graf porazdelitvene funkcije Y ter diskretne porazdelitvene funkcije
+# b) graf porazdelitvene funkcije Y ter diskretne porazdelitvene funkcije
 
 poraz.Y <- stepfun(seq(z, n * h - h, h), diffinv(diskretnaY)) 
 
@@ -157,19 +158,19 @@ diskr.S <- aggregateDist(method = "recursive",
 
 # d) Nasvet: S je diskretna spremenljivka
 
-#izračun upanja in disperzije
+# izračun upanja in disperzije
 
-#upanje slučanje spremenljivke S = (vrednosti S)* (skoki v teh točkah) 
+# upanje slučanje spremenljivke S = (vrednosti S)* (skoki v teh točkah) 
 moment1.S <- sum( knots(diskr.S) * diff(diskr.S)) 
-# = 42.2016
+# = 69.84754
 
 # drugi moment slučajne spremenljivke 
 moment2.S <- sum( knots(diskr.S)^2 * diff(diskr.S))
-# = 2184.512
+# = 7455.399
 
-#disperzija od S = E(S^2)-E(S)^2 
+# disperzija od S = E(S^2)-E(S)^2 
 disperzija.S <- moment2.S - moment1.S^2 
-# = 403.5375
+# = 2576.72
 
 #####################################################################################
 
@@ -192,14 +193,14 @@ for (n in simN){
 # b)ocena za upanje in disperzijo spremenljivke S
 
 upanje.simS <- mean(simS)
-# = 44.31815
+# = 74.14887
 
 var.simS <- var(simS)
-# = 2072.43
+# = 9040.729
 
 # S pomočjo simulacije dobimo boljšo oceno za pričakovano vrednost, saj je vrednost, ki smo jo dobili
 # s simulacijo bližja vrednosti iz 1. naloge kot vrednost pri Panjerjevem algoritmu.
-# Lahko pa površno rečemo, da dobimo boljšo oceno za varianco kot pri Panjerjevem algoritmu,
+# Lahko pa površno tudi rečemo, da dobimo boljšo oceno za varianco kot pri Panjerjevem algoritmu,
 # saj je vrednost višja in tako bližje neskočnosti.
 
 # c)
@@ -207,8 +208,7 @@ var.simS <- var(simS)
 sim.graf <- plot(diskr.S)
 plot(ecdf(simS),
      col = 'firebrick1',
-     add = TRUE,
-     lwd = 2)
+     add = TRUE)
 legend('right', 
        legend = c('Panjerjev algoritem', 'Monte Carlo simulacija'),
        col = c('black', 'firebrick1'),
