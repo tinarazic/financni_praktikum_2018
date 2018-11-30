@@ -1,78 +1,84 @@
-# FINANČNI PRAKTIKUM
-# 3.NALOGA : VREDNOTENJE EKSOTIČNIH OPCIJ
+#FINANČNI PRAKTIKUM: 4.Naloga
 
-library(combinat)
-library(Rlab)
+library(readr)
+library(graphics)
+library(stats)
 
-# 1.vaja
+# 1.Vaja: Uvoz in predstavitev podatkov 
 # a)
-W = c(1,2,3,4,5,6)
 
-pot1 = c(50,52.5,49.88,47.38,45.01,47.26)
-K1 <- sum((pot1*W)) / sum(W)
-izplaciloX1 <- max(pot1[6] - K1,0) # 0
-izplaciloY1 <- max(K1 - pot1[6],0) # 0.4909524
+uvoz_srebro <- read_csv("srebro.csv")
 
-pot2 = c(50.00,52.50, 55.12, 57.88, 60.78, 63.81)
-K2 <- sum((pot2*W)) / sum(W)
-izplaciloX2 <- max(pot2[6] - K2,0) # 4.827143
-izplaciloY2 <- max(K1 - pot2[6],0) # 0
+# izberemo samo zaključne tečaje
 
-pot3 = c(50.00, 47.50, 49.88, 47.38, 45.01, 42.76)
-K3 <- sum((pot3*W)) / sum(W)
-izplaciloX3 <- max(pot3[6] - K3,0) # 0
-izplaciloY3 <- max(K3 - pot3[6],0) # 3.229048
+srebro <- uvoz_srebro[,c(0,1,5)]
 
-pot4 = c(50.00, 47.50, 45.12, 47.38, 45.01, 47.26)
-K4 <- sum((pot4*W)) / sum(W)
-izplaciloX4 <- max(pot4[6] - K4,0) # 0.6652381
-izplaciloY4 <- max(K4 - pot4[6],0) # 0
+#obrnemo podatke
+srebro <- srebro[123:1,]
 
-pot5 = c(50.00, 52.50, 49.88, 52.37, 54.99, 52.24)
-K5 <- sum((pot5*W)) / sum(W)
-izplaciloX5 <- max(pot5[6] - K5,0) # 0
-izplaciloY5 <- max(K5 - pot5[6],0) # 0.2604762
+srebro$Close <- as.numeric(gsub("\\$","",srebro$Close))
 
-# b)
+# b) 
+S <- ts(srebro$Close)
+graf_S <- ts.plot(S,
+                  xlab='Čas', 
+                  ylab ='Vrednost v dolarjih', 
+                  main = 'Vrednost zlata')
+points(srebro$Close, pch = 20)
 
-izplacilo <- function(vrsta, W, type){
-  K <- sum(vrsta*W)/sum(W)
-  if(type == "call") {
-    return(max(vrsta[length(vrsta)] - K, 0))
-    }
-  else {
-    return(max(K - vrsta[length(vrsta)], 0))
+###########################################################################
+
+# 2. Vaja: Glajenje z drsečim povprečjem reda k
+
+# a)
+G <- function(vrsta,k){
+  glajene.vrednosti <- c()
+  for (i in (k+1):(length(vrsta))){
+    glajene.vrednosti[i] <- sum(vrsta[(i-1):(i-k)])/k
   }
-}
-
-
-# 2. Vaja
-
-# a)
-
-S0 = 50
-u = 1.05
-d = 0.95
-T = 5
-R = 0.03  
-W = c(1, 2, 3, 4, 5, 6)
-
-
-binomski<- function(S0,u,d,R,T,W,type) {
-  kocka1 <- hcube(c(rep(2,T))) - 1
-  kocka2 <- 2 - hcube(c(rep(2, T)))
-  kocka <- u^kocka1 * d^kocka2
-  matrika <- cbind(S0, kocka)
-  moznosti <- t(apply(matrika, 1, cumprod))
-  izpl <- (apply(moznosti, 1, izplacilo,W = W, type =type))
-  q <- (1 + R - d)/(u - d)
-  st_u <- rowSums(kocka1)
-  st_d <- T - st_u
-  verjetnosti <- (q ^st_u) *((1-q)^st_d)
-  premija <- sum(izpl * verjetnosti) / (1 + R)^T
-  return(premija)
-  
+  zglajena_vrsta <- ts(glajene.vrednosti)
+  return(zglajena_vrsta)
 }
 
 # b)
+
+
+napoved_vrsta <- function(vrsta,k){
+  zglajena_vrsta <- G(vrsta,k)
+  napoved <- rep(tail(zglajena_vrsta, n = 1),10)
+  napoved_vrsta <- ts(c(zglajena_vrsta,napoved))
+  return(napoved_vrsta)
+}
+
+napoved_vrsta(S,5)
+
+# c)
+graf_napovedana <- ts.plot(S,napoved_vrsta(S,5),
+                           main ="Drseče povprečje",
+                           xlab = "Čas",
+                           ylab = "Vrednost v dolarjih",
+                           col = c("black", "red"),
+                           lwd = c(1,2))
+points(srebro$Close, pch = 20)
+
+
+# d)
+SKN <- function(vrsta, zglajena_vrsta, k){
+  l <- length(vrsta)
+  napaka <- 0
+  for (i in k:(l-1)){
+    napaka <- napaka + (vrsta[i+1] - glajena.vrsta[i+1])^2
+  }
+  return (napaka/(l-k))
+}
+
+
+
+
+
+
+
+
+
+
 
